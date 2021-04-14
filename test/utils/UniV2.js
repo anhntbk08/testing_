@@ -241,7 +241,7 @@ export class UniV2Helper {
                 to,
                 deadline, 
             ],
-            // value: utils.toWei(10)
+            value: utils.toWei(amountMin*2)
         }
         return await this.execOnRouter(pars, from);
     }
