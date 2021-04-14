@@ -12,7 +12,7 @@ const aliceAddress = "0x480828077CEB6dF32bFB48A03D8d6A934A685247"
 const uniV2 = new UniV2Helper(web3);
 let panToken;
 
-contract('Pane', ([alice, bob, carol, tom]) => {
+contract('Pane', ([alice, bob, carol, vv, tom]) => {
     beforeEach(async () => {
         // panToken = await Pane.new(
         //   _uniswapV2Router,
@@ -274,11 +274,12 @@ contract('Pane', ([alice, bob, carol, tom]) => {
             true,
             _treasuryWallet,
             { from: alice })
+        console.log("panToken.address ", panToken.address)
         await uniV2.registerToken(panToken.address, "Pane", "Propane");
         await uniV2.allowRouter(panToken.address, alice);
         await uniV2.allowRouter(panToken.address, bob);
         await uniV2.allowRouter(panToken.address, carol);
-        await uniV2.allowRouter(panToken.address, tom);
+        
         await uniV2.addLiquidityEth(alice, panToken.address,
             1, 1 * 0.8, 1, 1 * 0.8);
         
@@ -287,8 +288,11 @@ contract('Pane', ([alice, bob, carol, tom]) => {
 
         // Buy some tokens, buyer charge fee
         console.log('About to buy some tokens for tom. Should succeed');
-        await uniV2.buy(panToken.address, utils.WETH, 0.1, 5, tom);
+        await uniV2.buy(panToken.address, utils.WETH, 0.05, 5, tom);
+        // await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.001, [utils.WETH, panToken.address], tom)
         console.log('Bought the tokens');
+
+        // await uniV2.buy(panToken.address, utils.WETH, 0.1, 5, tom);
         
         balanceOfPoolForSwap = await panToken.balanceOf(panToken.address)
         let tomBalance = await panToken.balanceOf(tom)
@@ -298,8 +302,9 @@ contract('Pane', ([alice, bob, carol, tom]) => {
         
         // Sell some tokens
         console.log('About to sell some tokens for tom. Should succeed');
+        await uniV2.allowRouter(panToken.address, tom);
         // let res1 = await uniV2.sell(panToken.address, utils.WETH, 0.01, 90, tom);
-        let res1 = await uniV2.swapExactTokensForETHSupportingFeeOnTransferTokens(tom, 0.5, 0.01, [panToken.address, utils.WETH], tom);
+        let res1 = await uniV2.swapExactTokensForETHSupportingFeeOnTransferTokens(tom, 0.01, 0.002, [panToken.address, utils.WETH], tom);
         console.log('Sold the tokens ', res1);
 
         balanceOfPoolForSwap = await panToken.balanceOf(panToken.address)

@@ -40,6 +40,7 @@ export async function execOnRouter(web3, contract, pars, from) {
         from,
         ...(value ? { value } : {})});
     console.log('Estimated gas', gasEstimate)
+    console.log('value ', value)
     const res = await method.send({
         from,
         gasLimit: new Big(gasEstimate).times('1.2').round(0).toFixed(0),

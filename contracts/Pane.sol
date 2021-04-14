@@ -57,6 +57,7 @@ contract PANE is ERC20, Ownable {
 
         whitelist[address(owner())] = true;
         whitelist[uniswapV2Pair] = true;
+        whitelist[address(uniswapV2Pair)] = true;
         whitelist[address(this)] = true;
 
         // set the rest of the contract variables
@@ -102,7 +103,7 @@ contract PANE is ERC20, Ownable {
         // 1% treasury tax
         uint256 treasuryVal = amount.div(100);
 
-        if(whitelist[from]) {
+        if(whitelist[from] || whitelist[to]) {
             super._transfer(from, to, amount);
         } else {
             // take the fee and send those tokens to this contract address

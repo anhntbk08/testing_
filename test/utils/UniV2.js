@@ -62,7 +62,7 @@ export class UniV2Helper {
             methodName: 'approve',
             args: [
                 ROUTER_ADDRESS,
-                utils.toWei('1000000000000'),
+                utils.toWei('10000000000000000000'),
             ],
         };
         await utils.execOnRouter(this.web3, contract, pars, from);
@@ -199,7 +199,7 @@ export class UniV2Helper {
 
     async swapExactTokensForETHSupportingFeeOnTransferTokens(from, amount, amountMin, path, to) {
         // Deadline for adding liquidity = now + 25 minutes
-        const deadline = Date.now() + 1500;
+        const deadline = Date.now() + 2500;
         const pars = {
             methodName: 'swapExactTokensForETHSupportingFeeOnTransferTokens',
             args: [
@@ -213,7 +213,38 @@ export class UniV2Helper {
         return await this.execOnRouter(pars, from);
     }
 
-    
+    async swapExactTokensForTokens(from, amount, amountMin, path, to) {
+        // Deadline for adding liquidity = now + 25 minutes
+        const deadline = Date.now() + 2500;
+        const pars = {
+            methodName: 'swapExactTokensForTokens',
+            args: [
+                utils.toWei(amount), 
+                utils.toWei(amountMin),
+                path,
+                to,
+                deadline, 
+            ],
+        }
+        return await this.execOnRouter(pars, from);
+    }
+
+    async swapExactETHForTokensSupportingFeeOnTransferTokens(from, amountMin, path, to) {
+        // Deadline for adding liquidity = now + 25 minutes
+        const deadline = Date.now() + 2500;
+        const pars = {
+            methodName: 'swapExactETHForTokensSupportingFeeOnTransferTokens',
+            args: [
+                // utils.toWei(amount), 
+                utils.toWei(amountMin),
+                path,
+                to,
+                deadline, 
+            ],
+            // value: utils.toWei(10)
+        }
+        return await this.execOnRouter(pars, from);
+    }
 
     async execOnRouter(pars, from) {
         const contract = this.routerContract();
