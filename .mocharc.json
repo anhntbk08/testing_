@@ -1,0 +1,5 @@
+{
+  "spec": "./test/token/*.js",
+  "require": "@babel/register",
+  "timeout": 12000
+}
