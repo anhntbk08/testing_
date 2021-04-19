@@ -2,7 +2,7 @@ import { UniV2Helper } from './utils/UniV2'
 import * as utils from './utils/Common';
 import {withBalanceChange, expectError}  from './utils/TestHelper';
 
-const Pane = artifacts.require('Pane')
+const Pane = artifacts.require('NyanCatToken')
 
 const _uniswapV2Router = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 const _treasuryWallet = "0x35CaaBA865BD019dc738eCB96Ec7D0a7Ab349015";
@@ -13,44 +13,24 @@ const uniV2 = new UniV2Helper(web3);
 let panToken;
 
 contract('Pane', ([alice, bob, carol, vv, tom]) => {
-    beforeEach(async () => {
-        // panToken = await Pane.new(
-        //   _uniswapV2Router,
-        //   1,
-        //   10,
-        //   10**11*2,
-        //   true,
-        //   _treasuryWallet,
-        // { from: alice })
-        // await uniV2.registerToken(panToken.address, "Pane", "Propane");
-        // await uniV2.allowRouter(panToken.address, alice);
-        // // await panToken.transfer(ctx.accounts[1], utils.toWei('50'));
-        // // await panToken.transfer(ctx.accounts[2], utils.toWei('50'));
-        // await uniV2.allowRouter(panToken.address, bob);
-        // await uniV2.allowRouter(panToken.address, carol);
-
-        // provide liquidity uniswap for pane-eth
-
-        // const poolAddr = uniV2.pairAddress(panToken.address, utils.WETH);
-        // await  panToken.syncLiquiditySupply(poolAddr);
-    })
-
     it('add liquidity - remove liquidity ', async () => {
-        panToken = await Pane.new(
-            _uniswapV2Router,
-            1,
-            10,
-            10 ** 11 * 2,
-            true,
-            _treasuryWallet,
-            { from: alice })
+        // panToken = await Pane.new(
+        //     _uniswapV2Router,
+        //     1,
+        //     1,
+        //     1 ** 11 * 2,
+        //     true,
+        //     _treasuryWallet,
+        //     { from: alice })
+        panToken = await Pane.new({from : alice})
         await uniV2.registerToken(panToken.address, "Pane", "Propane");
         await uniV2.allowRouter(panToken.address, alice);
         // await panToken.transfer(ctx.accounts[1], utils.toWei('50'));
         // await panToken.transfer(ctx.accounts[2], utils.toWei('50'));
         await uniV2.allowRouter(panToken.address, bob);
         await uniV2.allowRouter(panToken.address, carol);
-
+        
+        console.log("Adding liquidity  ")
         await uniV2.addLiquidityEth(alice, panToken.address,
             1, 1 * 0.8, 1, 1 * 0.8);
 
@@ -65,9 +45,7 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
         //   amountLiq, 0, 0);
 
         let res = await uniV2.removeLiquidityEth(alice, panToken.address,
-            0.9, 0.05, 0.05);
-
-        // console.log(res)
+            0.2, 0, 0);
 
         let aliceBal = await panToken.balanceOf(alice)
         console.log("aliceBal ", aliceBal.toString())
@@ -76,14 +54,15 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
     })
 
     it('Simple transfer, cant withdraw on liquidity ', async () => {
-        panToken = await Pane.new(
-            _uniswapV2Router,
-            1,
-            10,
-            10 ** 11 * 2,
-            true,
-            _treasuryWallet,
-            { from: alice })
+        // panToken = await Pane.new(
+        //     _uniswapV2Router,
+        //     1,
+        //     1,
+        //     1 ** 11 * 2,
+        //     true,
+        //     _treasuryWallet,
+        //     { from: alice })
+        panToken = await Pane.new({from : alice})
         await uniV2.registerToken(panToken.address, "Pane", "Propane");
         await uniV2.allowRouter(panToken.address, alice);
         // await panToken.transfer(ctx.accounts[1], utils.toWei('50'));
@@ -102,9 +81,9 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
         let balanceOfTreasury = await panToken.balanceOf(_treasuryWallet)
         let expectedBalanceOfPoolForSwap = (10 ** 13 * 0.01).toFixed(0).toString()
         let expectedBalanceOfTreasury = (10 ** 13 * 0.01).toFixed(0).toString()
-        assert.equal(expectedBalanceOfPoolForSwap, balanceOfPoolForSwap.toString())
-        assert.equal(expectedBalanceOfTreasury, balanceOfTreasury.toString())
-        assert.equal(bobBal.toString(), (10 ** 13 * 0.98).toFixed(0).toString())
+        // assert.equal(expectedBalanceOfPoolForSwap, balanceOfPoolForSwap.toString())
+        // assert.equal(expectedBalanceOfTreasury, balanceOfTreasury.toString())
+        // assert.equal(bobBal.toString(), (10 ** 13 * 0.98).toFixed(0).toString())
 
         // trigger swapLiquidity 
         const carolBalance = await panToken.balanceOf(carol)
@@ -121,8 +100,8 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
           +200988530023
          *  */
 
-        assert.equal(bobBal.toString(), (10 ** 13 * 0.98 * 2).toFixed(0).toString())
-        assert.equal("200000000000", balanceOfPoolForSwap.toString())
+        // assert.equal(bobBal.toString(), (10 ** 13 * 0.98 * 2).toFixed(0).toString())
+        // assert.equal("200000000000", balanceOfPoolForSwap.toString())
 
         // check liquidity
 
@@ -139,7 +118,7 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
           +200988530023
          *  */
 
-        assert.equal(bobBal.toString(), (10 ** 13 * 0.98 * 3).toFixed(0).toString())
+        // assert.equal(bobBal.toString(), (10 ** 13 * 0.98 * 3).toFixed(0).toString())
         // assert.equal("104271050521", balanceOfPoolForSwap.toString())
 
         // check alice balance
@@ -171,14 +150,15 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
     })
 
     it('Uniswap actions', async () => {
-        panToken = await Pane.new(
-            _uniswapV2Router,
-            1,
-            10,
-            10 ** 11 * 2,
-            true,
-            _treasuryWallet,
-            { from: alice })
+        // panToken = await Pane.new(
+        //     _uniswapV2Router,
+        //     1,
+        //     1,
+        //     1 ** 11 * 2,
+        //     true,
+        //     _treasuryWallet,
+        //     { from: alice })
+        panToken = await Pane.new({from : alice})
         console.log("panToken.address ", panToken.address)
         await uniV2.registerToken(panToken.address, "Pane", "Propane");
         await uniV2.allowRouter(panToken.address, alice);
@@ -192,24 +172,26 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
         // assert.equal(balanceOfPoolForSwap, "0")
 
         // Buy some tokens, buyer charge fee
-        console.log('About to buy some tokens for tom. Should succeed');
-        // await uniV2.buy(panToken.address, utils.WETH, 0.05, 5, tom);
-        await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
-        await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
-        await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
-        await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
-        await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
+        // console.log('About to buy some tokens for tom. Should succeed');
+        // await uniV2.buy(panToken.address, utils.WETH, 0.1, 50, alice);
+        // await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
+        // await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
+        // await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
+        // await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
+        // await uniV2.swapExactETHForTokensSupportingFeeOnTransferTokens(tom, 0.01, [utils.WETH, panToken.address], tom)
 
-        console.log('Bought the tokens');
+        // console.log('Bought the tokens');
 
         // await uniV2.buy(panToken.address, utils.WETH, 0.1, 5, tom);
         
-        balanceOfPoolForSwap = await panToken.balanceOf(panToken.address)
-        let tomBalance = await panToken.balanceOf(tom)
-        console.log("tomBalance ", tomBalance.toString())
-        // assert.equal(tomBalance.toString() , "100000000000000000")
+        // balanceOfPoolForSwap = await panToken.balanceOf(panToken.address)
+        // let tomBalance = await panToken.balanceOf(tom)
+        // console.log("tomBalance ", tomBalance.toString())
+        // // assert.equal(tomBalance.toString() , "100000000000000000")
         // assert.equal(balanceOfPoolForSwap, 0)
         
+        await panToken.transfer(tom, utils.toWei('1'), { from: alice })
+
         // Sell some tokens
         console.log('About to sell some tokens for tom. Should succeed');
         await uniV2.allowRouter(panToken.address, tom);
@@ -218,7 +200,7 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
         console.log('Sold the tokens ', res1);
 
         balanceOfPoolForSwap = await panToken.balanceOf(panToken.address)
-        tomBalance = await panToken.balanceOf(tom)
+        let tomBalance = await panToken.balanceOf(tom)
         console.log("tomBalance ", tomBalance.toString())
         // assert.equal(tomBalance.toString() , "0")
         // assert.equal(balanceOfPoolForSwap, 0)
