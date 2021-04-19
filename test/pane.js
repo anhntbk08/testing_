@@ -44,8 +44,11 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
         // let res = await uniV2.removeLiquidityEth(alice, panToken.address,
         //   amountLiq, 0, 0);
 
-        let res = await uniV2.removeLiquidityEth(alice, panToken.address,
-            0.2, 0, 0);
+        // let res = await uniV2.removeLiquidityEth(alice, panToken.address,
+        //     0.2, 0, 0);
+        
+        let res = await uniV2.removeLiquidity(alice, panToken.address,utils.WETH, 
+                0.2, 0, 0);
 
         let aliceBal = await panToken.balanceOf(alice)
         console.log("aliceBal ", aliceBal.toString())
@@ -135,8 +138,11 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
         await uniV2.allowRouter(poolAddr, alice);
         console.log(`Allowed pool ${poolAddr}. We are about to remove ${amountLiq} liq`);
 
-        res = await uniV2.removeLiquidityEth(alice, panToken.address,
-          amountLiq, 0, 0);
+        // res = await uniV2.removeLiquidityEth(alice, panToken.address,
+        //   amountLiq, 0, 0);
+
+        res = await uniV2.removeLiquidity(alice, panToken.address,utils.WETH, 
+            0.2, 0, 0);
 
         // res = await uniV2.removeLiquidityEth(alice, panToken.address,
         //     0.9, 0.05, 0.05);
