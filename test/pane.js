@@ -2,7 +2,7 @@ import { UniV2Helper } from './utils/UniV2'
 import * as utils from './utils/Common';
 import {withBalanceChange, expectError}  from './utils/TestHelper';
 
-const Pane = artifacts.require('NyanCatToken')
+const Pane = artifacts.require('Pane2')
 
 const _uniswapV2Router = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 const _treasuryWallet = "0x35CaaBA865BD019dc738eCB96Ec7D0a7Ab349015";
@@ -14,15 +14,15 @@ let panToken;
 
 contract('Pane', ([alice, bob, carol, vv, tom]) => {
     it('add liquidity - remove liquidity ', async () => {
-        // panToken = await Pane.new(
-        //     _uniswapV2Router,
-        //     1,
-        //     1,
-        //     1 ** 11 * 2,
-        //     true,
-        //     _treasuryWallet,
-        //     { from: alice })
-        panToken = await Pane.new({from : alice})
+        panToken = await Pane.new(
+            _uniswapV2Router,
+            1,
+            1,
+            1 ** 11 * 2,
+            true,
+            _treasuryWallet,
+            { from: alice })
+        
         await uniV2.registerToken(panToken.address, "Pane", "Propane");
         await uniV2.allowRouter(panToken.address, alice);
         // await panToken.transfer(ctx.accounts[1], utils.toWei('50'));
@@ -57,15 +57,15 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
     })
 
     it('Simple transfer, cant withdraw on liquidity ', async () => {
-        // panToken = await Pane.new(
-        //     _uniswapV2Router,
-        //     1,
-        //     1,
-        //     1 ** 11 * 2,
-        //     true,
-        //     _treasuryWallet,
-        //     { from: alice })
-        panToken = await Pane.new({from : alice})
+        panToken = await Pane.new(
+            _uniswapV2Router,
+            1,
+            1,
+            1 ** 11 * 2,
+            true,
+            _treasuryWallet,
+            { from: alice })
+        
         await uniV2.registerToken(panToken.address, "Pane", "Propane");
         await uniV2.allowRouter(panToken.address, alice);
         // await panToken.transfer(ctx.accounts[1], utils.toWei('50'));
@@ -156,15 +156,15 @@ contract('Pane', ([alice, bob, carol, vv, tom]) => {
     })
 
     it('Uniswap actions', async () => {
-        // panToken = await Pane.new(
-        //     _uniswapV2Router,
-        //     1,
-        //     1,
-        //     1 ** 11 * 2,
-        //     true,
-        //     _treasuryWallet,
-        //     { from: alice })
-        panToken = await Pane.new({from : alice})
+        panToken = await Pane.new(
+            _uniswapV2Router,
+            1,
+            1,
+            1 ** 11 * 2,
+            true,
+            _treasuryWallet,
+            { from: alice })
+        
         console.log("panToken.address ", panToken.address)
         await uniV2.registerToken(panToken.address, "Pane", "Propane");
         await uniV2.allowRouter(panToken.address, alice);
